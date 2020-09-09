@@ -262,4 +262,12 @@ ENV SHELL=/usr/bin/zsh \
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
+# Oh My Zsh
+RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh" | sh - \
+ && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k \
+ && /home/theia/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus/install
+
+COPY dot-zshrc /home/theia/.zshrc
+COPY dot-p10k.zsh /home/theia/.p10k.zsh
+
 ENTRYPOINT [ "node", "/home/theia/src-gen/backend/main.js", "/home/project", "--hostname=0.0.0.0" ]
