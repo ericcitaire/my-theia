@@ -213,6 +213,12 @@ RUN chmod g+rw /home && \
     chown -R theia:theia /usr/local/go && \
     chown -R theia:theia /usr/local/go-packages
 
+# Zsh
+RUN apt-get update \
+ && apt-get install -yq zsh \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* \
+ && chsh -s /usr/bin/zsh theia
+
 
 # Theia application
 ##Needed for node-gyp, nsfw build
@@ -248,7 +254,7 @@ RUN chmod +x ./plugins/yangster/extension/server/bin/yang-language-server
 
 EXPOSE 3000
 # configure Theia
-ENV SHELL=/bin/bash \
+ENV SHELL=/usr/bin/zsh \
     THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/plugins  \
     # configure user Go path
     GOPATH=/home/project
