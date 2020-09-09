@@ -15,6 +15,11 @@ ARG version=latest
 ARG strip=false
 ENV strip=$strip
 
+# Unminimize
+RUN yes | unminimize \
+ && apt-get install -yq man-db manpages manpages-posix \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
+
 #Common deps
 RUN apt-get update && \
     apt-get -y install build-essential \
