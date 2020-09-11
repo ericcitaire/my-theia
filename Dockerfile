@@ -204,7 +204,9 @@ RUN apt-get remove docker docker-engine docker.io containerd runc \
  && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
  && apt-get update \
  && apt-get install -yq docker-ce docker-ce-cli containerd.io \
- && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* \
+ && curl -fsSL "https://github.com/docker/compose/releases/download/1.27.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+ && chmod 755 /usr/local/bin/docker-compose
 
 
 ## User account
