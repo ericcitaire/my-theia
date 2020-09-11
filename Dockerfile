@@ -188,6 +188,7 @@ RUN apt-get update \
     && python -m pip install --upgrade pip --user \
     && python3.8 -m pip install --upgrade pip --user \
     && pip install python-language-server flake8 autopep8
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 
 #Ruby
