@@ -28,7 +28,8 @@ RUN apt-get update && \
                        gpg \
                        python \
                        wget \
-                       xz-utils
+                       xz-utils \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 #Install node and yarn
 #From: https://github.com/nodejs/docker-node/blob/6b8d86d6ad59e0d1e7a94cec2e909cad137a028f/8/Dockerfile
@@ -96,7 +97,8 @@ RUN set -ex \
 #Developer tools
 
 ## Git and sudo (sudo needed for user override)
-RUN apt-get update && apt-get -y install git sudo
+RUN apt-get update && apt-get -y install git sudo \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 #LSPs
 
@@ -145,7 +147,8 @@ ENV PATH=$PATH:$GOPATH/bin
 
 
 #Java
-RUN apt-get update && apt-get -y install openjdk-11-jdk maven gradle
+RUN apt-get update && apt-get -y install openjdk-11-jdk maven gradle \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 
 #C/C++
@@ -167,7 +170,8 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
     ln -s /usr/bin/clang-cl-$LLVM /usr/bin/clang-cl && \
     ln -s /usr/bin/clang-cpp-$LLVM /usr/bin/clang-cpp && \
     ln -s /usr/bin/clang-tidy-$LLVM /usr/bin/clang-tidy && \
-    ln -s /usr/bin/clangd-$LLVM /usr/bin/clangd
+    ln -s /usr/bin/clangd-$LLVM /usr/bin/clangd \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 # Install latest stable CMake
 ARG CMAKE_VERSION=3.18.1
@@ -187,19 +191,22 @@ RUN apt-get update \
     && apt-get remove -y software-properties-common \
     && python -m pip install --upgrade pip --user \
     && python3.8 -m pip install --upgrade pip --user \
-    && pip install python-language-server flake8 autopep8
+    && pip install python-language-server flake8 autopep8 \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
     PATH=$PATH:/home/theia/.local/bin
 
 
 #Ruby
 RUN apt-get update && apt-get -y install ruby ruby-dev zlib1g-dev && \
-    gem install solargraph
+    gem install solargraph \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 
 #Docker
 # https://docs.docker.com/engine/install/ubuntu/
-RUN apt-get remove docker docker-engine docker.io containerd runc \
+RUN apt-get update \
+ && apt-get remove docker docker-engine docker.io containerd runc \
  && apt-get update \
  && apt-get install -yq apt-transport-https ca-certificates curl gnupg-agent software-properties-common \
  && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
