@@ -253,7 +253,7 @@ RUN apt-get update && apt-get install -y python build-essential && \
   rm -rf /tmp/*
 
 # Tools
-RUN apt-get update && apt-get -y install vim \
+RUN apt-get update && apt-get -y install vim jq htop tmux screen \
  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 USER theia
