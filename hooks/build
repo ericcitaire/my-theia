@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "Building latest tag"
+docker build -t $IMAGE_NAME .
+
+echo "Building gitpod tag"
+docker build \
+  --build-arg user=gitpod \
+  --build-arg group=gitpod \
+  --build-arg uid=33333 \
+  --build-arg gid=33333 \
+  -t $DOCKER_REPO:gitpod .
