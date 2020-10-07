@@ -194,7 +194,7 @@ RUN apt-get update \
     && pip install python-language-server flake8 autopep8 \
  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
-    PATH=$PATH:/home/theia/.local/bin
+    PATH=$PATH:/home/${user}/.local/bin
 
 
 #Ruby
@@ -218,29 +218,35 @@ RUN apt-get update \
  && chmod 755 /usr/local/bin/docker-compose
 
 
-## User account
-RUN adduser --disabled-password --gecos '' theia && \
-    adduser theia sudo && \
-    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-ADD settings.json /home/theia/.theia/
-
-RUN chmod g+rw /home && \
-    mkdir -p /home/project && \
-    mkdir -p /home/theia/.pub-cache/bin && \
-    mkdir -p /usr/local/cargo && \
-    mkdir -p /usr/local/go && \
-    mkdir -p /usr/local/go-packages && \
-    chown -R theia:theia /home/theia && \
-    chown -R theia:theia /home/project && \
-    chown -R theia:theia /usr/local/cargo && \
-    chown -R theia:theia /usr/local/go && \
-    chown -R theia:theia /usr/local/go-packages
-
 # Zsh
 RUN apt-get update \
  && apt-get install -yq zsh \
- && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* \
- && chsh -s /usr/bin/zsh theia
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
+
+
+ARG user=theia
+ARG group=theia
+ARG uid=1000
+ARG gid=1000
+
+## User account
+RUN mkdir -p /home/${user} \
+  && chown ${uid}:${gid} /home/${user} \
+  && groupadd -g ${gid} ${group} \
+  && useradd -d /home/${user} -u ${uid} -g ${gid} -m -s /usr/bin/zsh ${user}
+ADD settings.json /home/${user}/.theia/
+
+RUN chmod g+rw /home && \
+    mkdir -p /home/project && \
+    mkdir -p /home/${user}/.pub-cache/bin && \
+    mkdir -p /usr/local/cargo && \
+    mkdir -p /usr/local/go && \
+    mkdir -p /usr/local/go-packages && \
+    chown -R ${user}:${group} /home/${user} && \
+    chown -R ${user}:${group} /home/project && \
+    chown -R ${user}:${group} /usr/local/cargo && \
+    chown -R ${user}:${group} /usr/local/go && \
+    chown -R ${user}:${group} /usr/local/go-packages
 
 
 # Theia application
@@ -256,8 +262,8 @@ RUN apt-get update && apt-get install -y python build-essential && \
 RUN apt-get update && apt-get -y install vim jq htop tmux screen \
  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
-USER theia
-WORKDIR /home/theia
+USER ${user}
+WORKDIR /home/${user}
 ADD $version.package.json ./package.json
 
 RUN if [ "$strip" = "true" ]; then \
@@ -282,7 +288,7 @@ RUN chmod +x ./plugins/yangster/extension/server/bin/yang-language-server
 EXPOSE 3000
 # configure Theia
 ENV SHELL=/usr/bin/zsh \
-    THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/plugins  \
+    THEIA_DEFAULT_PLUGINS=local-dir:/home/${user}/plugins  \
     # configure user Go path
     GOPATH=/home/project
 
@@ -292,9 +298,9 @@ ENV LANG=C.UTF-8
 # Oh My Zsh
 RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh" | sh - \
  && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k \
- && /home/theia/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus/install
+ && /home/${user}/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus/install
 
-COPY --chown=theia:theia dot-zshrc /home/theia/.zshrc
-COPY --chown=theia:theia dot-p10k.zsh /home/theia/.p10k.zsh
+COPY --chown=${user}:${group} dot-zshrc /home/${user}/.zshrc
+COPY --chown=${user}:${group} dot-p10k.zsh /home/${user}/.p10k.zsh
 
-ENTRYPOINT [ "node", "/home/theia/src-gen/backend/main.js", "/home/project", "--hostname=0.0.0.0" ]
+ENTRYPOINT [ "node", "/home/${user}/src-gen/backend/main.js", "/home/project", "--hostname=0.0.0.0" ]
