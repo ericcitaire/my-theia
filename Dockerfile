@@ -303,4 +303,6 @@ RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/i
 COPY --chown=${user}:${group} dot-zshrc /home/${user}/.zshrc
 COPY --chown=${user}:${group} dot-p10k.zsh /home/${user}/.p10k.zsh
 
+RUN echo 'if [ "$SHLVL" -eq 1 ] ; then exec zsh ; fi' >> /home/${user}/.bashrc
+
 ENTRYPOINT [ "node", "/home/${user}/src-gen/backend/main.js", "/home/project", "--hostname=0.0.0.0" ]
