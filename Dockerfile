@@ -224,6 +224,20 @@ RUN apt-get update \
  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 
+# Theia application
+##Needed for node-gyp, nsfw build
+RUN apt-get update && apt-get install -y python build-essential && \
+  apt-get clean && \
+  apt-get autoremove -y && \
+  rm -rf /var/cache/apt/* && \
+  rm -rf /var/lib/apt/lists/* && \
+  rm -rf /tmp/*
+
+# Tools
+RUN apt-get update && apt-get -y install vim jq htop tmux screen \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
+
+
 ARG user=theia
 ARG group=theia
 ARG uid=1000
@@ -247,20 +261,6 @@ RUN chmod g+rw /home && \
     chown -R ${user}:${group} /usr/local/cargo && \
     chown -R ${user}:${group} /usr/local/go && \
     chown -R ${user}:${group} /usr/local/go-packages
-
-
-# Theia application
-##Needed for node-gyp, nsfw build
-RUN apt-get update && apt-get install -y python build-essential && \
-  apt-get clean && \
-  apt-get autoremove -y && \
-  rm -rf /var/cache/apt/* && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /tmp/*
-
-# Tools
-RUN apt-get update && apt-get -y install vim jq htop tmux screen \
- && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 USER ${user}
 WORKDIR /home/${user}
