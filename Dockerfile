@@ -300,9 +300,9 @@ RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/i
  && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k \
  && /home/${user}/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus/install
 
-COPY --chown=${user}:${group} dot-zshrc /home/${user}/.zshrc
-COPY --chown=${user}:${group} dot-p10k.zsh /home/${user}/.p10k.zsh
+COPY --chown=${user}:${group} dot-zshrc $HOME/.zshrc
+COPY --chown=${user}:${group} dot-p10k.zsh $HOME/.p10k.zsh
 
-RUN echo 'if [ "$SHLVL" -eq 1 ] ; then exec zsh ; fi' >> /home/${user}/.bashrc
+RUN printf '\n\n# Force ZSH\nif [ "$SHLVL" -eq 1 ] ; then exec zsh ; fi\n\n' >> $HOME/.bashrc
 
-ENTRYPOINT [ "node", "/home/${user}/src-gen/backend/main.js", "/home/project", "--hostname=0.0.0.0" ]
+ENTRYPOINT [ "node", "$HOME/src-gen/backend/main.js", "/home/project", "--hostname=0.0.0.0" ]
