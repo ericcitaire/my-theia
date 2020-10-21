@@ -247,7 +247,8 @@ ARG gid=1000
 RUN mkdir -p /home/${user} \
   && chown ${uid}:${gid} /home/${user} \
   && groupadd -g ${gid} ${group} \
-  && useradd -d /home/${user} -u ${uid} -g ${gid} -m -s /usr/bin/zsh ${user}
+  && useradd -d /home/${user} -u ${uid} -g ${gid} -G sudo -m -s /usr/bin/zsh ${user} \
+  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 ADD settings.json /home/${user}/.theia/
 
 RUN chmod g+rw /home && \
