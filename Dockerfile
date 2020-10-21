@@ -305,4 +305,4 @@ COPY --chown=${user}:${group} dot-p10k.zsh $HOME/.p10k.zsh
 
 RUN printf '\n\n# Force ZSH\nif [ "$SHLVL" -eq 1 ] ; then exec zsh ; fi\n\n' >> $HOME/.bashrc
 
-ENTRYPOINT [ "node", "$HOME/src-gen/backend/main.js", "/home/project", "--hostname=0.0.0.0" ]
+ENTRYPOINT exec node "$HOME/src-gen/backend/main.js" /home/project --hostname=0.0.0.0
