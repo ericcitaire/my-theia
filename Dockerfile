@@ -299,10 +299,10 @@ ENV LANG=C.UTF-8
 # Oh My Zsh
 RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh" | sh - \
  && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k \
- && /home/${user}/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus/install
+ && $HOME/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus/install
 
-COPY --chown=${user}:${group} dot-zshrc $HOME/.zshrc
-COPY --chown=${user}:${group} dot-p10k.zsh $HOME/.p10k.zsh
+COPY --chown=${user}:${group} dot-zshrc /home/${user}/.zshrc
+COPY --chown=${user}:${group} dot-p10k.zsh /home/${user}/.p10k.zsh
 
 RUN printf '\n\n# Force ZSH\nif [ "$SHLVL" -eq 1 ] ; then exec zsh ; fi\n\n' >> $HOME/.bashrc
 
